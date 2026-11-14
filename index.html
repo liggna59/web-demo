@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản Lý Bán Hàng Vật Tư Bán Lẻ</title>
+    <link rel="stylesheet" href="css/style.css?v=2">
+</head>
+<body>
+
+    <header class="app-header">
+        <h1>CỬA HÀNG VẬT TƯ BÁN LẺ</h1>
+        <p>Hệ thống quản lý bán hàng và lập hóa đơn</p>
+    </header>
+
+    <nav class="nav-tabs">
+        <button class="tab-btn active" onclick="chuyenTab('tab-banhang', this)">Bán Hàng</button>
+        <button class="tab-btn" onclick="chuyenTab('tab-khohang', this)">Kho Hàng</button>
+        <button class="tab-btn" onclick="chuyenTab('tab-lichsu', this)">Lịch Sử Đơn</button>
+    </nav>
+
+    <div class="container">
+
+        <div id="tab-banhang" class="tab-content active">
+            <div class="box">
+                <h2>Lập Hóa Đơn Bán Hàng</h2>
+                <div class="form-row">
+                    <label>Tên khách hàng:</label>
+                    <input type="text" id="tenKhach" placeholder="Nhập tên khách hàng...">
+                    <label>Ngày lập:</label>
+                    <input type="date" id="ngayLap">
+                </div>
+
+                <div class="btn-group">
+                    <button class="btn btn-blue" onclick="themDong()">Thêm dòng hàng</button>
+                    <button class="btn btn-green" onclick="luuHoaDon()">Lưu hóa đơn</button>
+                    <button class="btn btn-gray" onclick="lamMoi()">Làm mới</button>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 45px;">STT</th>
+                            <th>Tên hàng hóa</th>
+                            <th style="width: 120px;">Đơn vị tính</th>
+                            <th style="width: 100px;">Số lượng</th>
+                            <th style="width: 140px;">Đơn giá (đ)</th>
+                            <th style="width: 150px;">Thành tiền (đ)</th>
+                            <th style="width: 70px;">Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bangHoaDon"></tbody>
+                </table>
+
+                <div class="total-box">
+                    <span>Tổng tiền thanh toán:</span>
+                    <strong id="tongTien">0 đ</strong>
+                </div>
+            </div>
+        </div>
+
+        <div id="tab-khohang" class="tab-content">
+            <div class="box">
+                <h2>Danh Mục Kho Hàng</h2>
+                <div class="form-row inline-form">
+                    <input type="text" id="spTen" placeholder="Tên mặt hàng...">
+                    <input type="text" id="spDvt" placeholder="Đơn vị tính...">
+                    <input type="number" id="spGia" placeholder="Giá bán...">
+                    <button class="btn btn-blue" onclick="themSanPham()">Thêm vào kho</button>
+                </div>
+
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 45px;">STT</th>
+                            <th>Tên hàng hóa</th>
+                            <th>Đơn vị tính</th>
+                            <th>Giá bán (đ)</th>
+                            <th style="width: 70px;">Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bangKhoHang"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-lichsu" class="tab-content">
+            <div class="box">
+                <h2>Lịch Sử Đơn Hàng Đã Lưu</h2>
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th style="width: 45px;">STT</th>
+                            <th>Mã đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày lập</th>
+                            <th>Tổng tiền (đ)</th>
+                            <th style="width: 70px;">Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody id="bangLichSu"></tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="js/app.js?v=2"></script>
+</body>
+</html>
