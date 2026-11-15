@@ -1,13 +1,33 @@
-let danhSachHang = [
-    { ten: "Ống nhựa PVC D27", dvt: "Cây", gia: 42000 },
-    { ten: "Ống nhựa PVC D21", dvt: "Cây", gia: 30000 },
-    { ten: "Dây điện Cadivi 2.5", dvt: "Cuộn", gia: 790000 },
-    { ten: "Aptomat Panasonic 20A", dvt: "Cái", gia: 95000 },
-    { ten: "Xi măng Hà Tiên", dvt: "Bao", gia: 98000 }
-];
+const API_BASE = "http://localhost:8080/api";
 
+let danhSachHang = [];
 let danhSachHoaDon = [];
 let cacDongHang = [];
+
+async function taiDanhSachHang() {
+    try {
+        let res = await fetch(`${API_BASE}/products`);
+        if (res.ok) {
+            danhSachHang = await res.json();
+            veBangKho();
+        }
+    } catch (e) {
+        console.error("Loi ket noi Backend:", e);
+    }
+}
+
+async function taiDanhSachHoaDon() {
+    try {
+        let res = await fetch(`${API_BASE}/invoices`);
+        if (res.ok) {
+            danhSachHoaDon = await res.json();
+            if (!Array.isArray(danhSachHoaDon)) danhSachHoaDon = [];
+            veBangLichSu();
+        }
+    } catch (e) {
+        console.error("Loi ket noi Backend:", e);
+    }
+}
 
 function chuyenTab(tabId, btn) {
     document.querySelectorAll(".tab-content").forEach(el => el.classList.remove("active"));
@@ -20,8 +40,8 @@ function chuyenTab(tabId, btn) {
         window.event.target.classList.add("active");
     }
 
-    if (tabId === "tab-khohang") veBangKho();
-    if (tabId === "tab-lichsu") veBangLichSu();
+    if (tabId === "tab-khohang") taiDanhSachHang();
+    if (tabId === "tab-lichsu") taiDanhSachHoaDon();
 }
 
 function themDong() {
@@ -79,7 +99,7 @@ function doiDvt(i, val) { cacDongHang[i].dvt = val; }
 function doiSl(i, val) { cacDongHang[i].sl = val; tinhTien(i); }
 function doiGia(i, val) { cacDongHang[i].gia = val; tinhTien(i); }
 
-function luuHoaDon() {
+async function luuHoaDon() {
     let tenKhach = document.getElementById("tenKhach").value.trim() || "Khách lẻ";
     let ngay = document.getElementById("ngayLap").value || new Date().toISOString().split("T")[0];
 
@@ -92,16 +112,27 @@ function luuHoaDon() {
     let tongTien = hopLe.reduce((sum, d) => sum + d.thanhTien, 0);
     let maDon = "HD_" + Date.now().toString().slice(-6);
 
-    danhSachHoaDon.unshift({
+    let hd = {
         ma: maDon,
         khach: tenKhach,
         ngay: ngay,
         tong: tongTien
-    });
+    };
 
-    localStorage.setItem("danhSachHoaDon", JSON.stringify(danhSachHoaDon));
-    alert("Đã lưu hóa đơn thành công! Mã đơn: " + maDon);
-    lamMoi();
+    try {
+        let res = await fetch(`${API_BASE}/invoices`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(hd)
+        });
+        if (res.ok) {
+            alert("Đã lưu hóa đơn thành công! Mã đơn: " + maDon);
+            lamMoi();
+            taiDanhSachHoaDon();
+        }
+    } catch (e) {
+        alert("Không thể kết nối đến Backend!");
+    }
 }
 
 function lamMoi() {
@@ -120,13 +151,13 @@ function veBangKho() {
             <td>${sp.ten}</td>
             <td>${sp.dvt}</td>
             <td>${sp.gia.toLocaleString("vi-VN")} đ</td>
-            <td><button class="btn btn-red" onclick="xoaSanPham(${i})">Xóa</button></td>
+            <td><button class="btn btn-red" onclick="xoaSanPham('${sp.ten}')">Xóa</button></td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-function themSanPham() {
+async function themSanPham() {
     let ten = document.getElementById("spTen").value.trim();
     let dvt = document.getElementById("spDvt").value.trim() || "Cái";
     let gia = parseFloat(document.getElementById("spGia").value) || 0;
@@ -136,27 +167,39 @@ function themSanPham() {
         return;
     }
 
-    danhSachHang.push({ ten, dvt, gia });
-    localStorage.setItem("danhSachHang", JSON.stringify(danhSachHang));
-    document.getElementById("spTen").value = "";
-    document.getElementById("spDvt").value = "";
-    document.getElementById("spGia").value = "";
-    veBangKho();
-    alert("Đã thêm mặt hàng vào kho!");
+    try {
+        let res = await fetch(`${API_BASE}/products`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ ten, dvt, gia })
+        });
+        if (res.ok) {
+            document.getElementById("spTen").value = "";
+            document.getElementById("spDvt").value = "";
+            document.getElementById("spGia").value = "";
+            taiDanhSachHang();
+            alert("Đã thêm mặt hàng vào kho!");
+        }
+    } catch (e) {
+        alert("Không thể kết nối đến Backend!");
+    }
 }
 
-function xoaSanPham(i) {
+async function xoaSanPham(ten) {
     if (confirm("Bạn có chắc muốn xóa mặt hàng này?")) {
-        danhSachHang.splice(i, 1);
-        localStorage.setItem("danhSachHang", JSON.stringify(danhSachHang));
-        veBangKho();
+        try {
+            await fetch(`${API_BASE}/products?ten=${encodeURIComponent(ten)}`, { method: "DELETE" });
+            taiDanhSachHang();
+        } catch (e) {
+            alert("Không thể kết nối đến Backend!");
+        }
     }
 }
 
 function veBangLichSu() {
     let tbody = document.getElementById("bangLichSu");
     tbody.innerHTML = "";
-    if (danhSachHoaDon.length === 0) {
+    if (!danhSachHoaDon || danhSachHoaDon.length === 0) {
         tbody.innerHTML = `<tr><td colspan="6" style="text-align: center; color: #888;">Chưa có hóa đơn nào</td></tr>`;
         return;
     }
@@ -168,17 +211,20 @@ function veBangLichSu() {
             <td>${hd.khach}</td>
             <td>${hd.ngay}</td>
             <td><strong style="color: #16a34a;">${hd.tong.toLocaleString("vi-VN")} đ</strong></td>
-            <td><button class="btn btn-red" onclick="xoaHoaDon(${i})">Xóa</button></td>
+            <td><button class="btn btn-red" onclick="xoaHoaDon('${hd.ma}')">Xóa</button></td>
         `;
         tbody.appendChild(tr);
     });
 }
 
-function xoaHoaDon(i) {
+async function xoaHoaDon(ma) {
     if (confirm("Bạn có chắc muốn xóa hóa đơn này?")) {
-        danhSachHoaDon.splice(i, 1);
-        localStorage.setItem("danhSachHoaDon", JSON.stringify(danhSachHoaDon));
-        veBangLichSu();
+        try {
+            await fetch(`${API_BASE}/invoices?ma=${encodeURIComponent(ma)}`, { method: "DELETE" });
+            taiDanhSachHoaDon();
+        } catch (e) {
+            alert("Không thể kết nối đến Backend!");
+        }
     }
 }
 
@@ -186,11 +232,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let today = new Date().toISOString().split("T")[0];
     document.getElementById("ngayLap").value = today;
 
-    let localHang = localStorage.getItem("danhSachHang");
-    if (localHang) danhSachHang = JSON.parse(localHang);
-
-    let localHD = localStorage.getItem("danhSachHoaDon");
-    if (localHD) danhSachHoaDon = JSON.parse(localHD);
-
+    taiDanhSachHang();
+    taiDanhSachHoaDon();
     themDong();
 });
