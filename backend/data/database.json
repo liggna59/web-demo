@@ -1,0 +1,52 @@
+{
+  "nguoiDung": [
+    {
+      "username": "admin",
+      "password": "123",
+      "hoTen": "Quản trị viên",
+      "role": "admin"
+    },
+    {
+      "username": "nhanvien",
+      "password": "123",
+      "hoTen": "Nhân viên bán hàng",
+      "role": "user"
+    }
+  ],
+  "sanPham": [
+    {
+      "ten": "Ống nhựa PVC D27",
+      "dvt": "Cây",
+      "gia": 42000
+    },
+    {
+      "ten": "Ống nhựa PVC D21",
+      "dvt": "Cây",
+      "gia": 30000
+    },
+    {
+      "ten": "Dây điện Cadivi 2.5",
+      "dvt": "Cuộn",
+      "gia": 790000
+    },
+    {
+      "ten": "Aptomat Panasonic 20A",
+      "dvt": "Cái",
+      "gia": 95000
+    },
+    {
+      "ten": "Xi măng Hà Tiên",
+      "dvt": "Bao",
+      "gia": 98000
+    }
+  ],
+  "hoaDon": [
+    {
+      "ma": "HD_114030",
+      "khach": "Khách lẻ",
+      "ngay": "2026-11-20",
+      "tong": 300000,
+      "nguoiTao": "nhanvien"
+    }
+  ]
+}

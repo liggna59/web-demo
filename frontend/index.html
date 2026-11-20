@@ -4,107 +4,267 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quản Lý Bán Hàng Vật Tư Bán Lẻ</title>
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style.css?v=8">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; background-color: #f6f8fa; color: #1f2328; }
+        .gh-auth-wrapper { min-height: 100vh; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 32px 16px; box-sizing: border-box; background-color: #f6f8fa; }
+        .gh-header { text-align: center; margin-bottom: 20px; }
+        .gh-logo-icon { color: #1e3a8a; margin-bottom: 12px; }
+        .gh-app-title { font-size: 14px; font-weight: 600; color: #1e3a8a; letter-spacing: 0.3px; margin-bottom: 8px; }
+        .gh-heading { font-size: 24px; font-weight: 300; color: #1f2328; margin: 0; }
+        .gh-alert { width: 100%; max-width: 340px; padding: 10px 14px; margin-bottom: 16px; border-radius: 6px; font-size: 13px; text-align: center; box-sizing: border-box; }
+        .gh-alert.alert-error { background-color: #ffebe9; color: #cf222e; border: 1px solid rgba(255, 129, 130, 0.4); }
+        .gh-alert.alert-success { background-color: #dafbe1; color: #1a7f37; border: 1px solid rgba(74, 194, 107, 0.4); }
+        .gh-card { width: 100%; max-width: 340px; background-color: #ffffff; border: 1px solid #d0d7de; border-radius: 6px; padding: 20px; box-sizing: border-box; box-shadow: 0 1px 3px rgba(31, 35, 40, 0.12); }
+        .gh-form-group { margin-bottom: 16px; text-align: left; }
+        .gh-label { display: block; font-size: 14px; font-weight: 500; color: #1f2328; margin-bottom: 6px; }
+        .gh-input { width: 100%; padding: 7px 12px; font-size: 14px; color: #1f2328; background-color: #ffffff; border: 1px solid #d0d7de; border-radius: 6px; outline: none; box-sizing: border-box; }
+        .gh-input:focus { border-color: #1e3a8a; box-shadow: 0 0 0 3px rgba(30, 58, 138, 0.2); }
+        .gh-btn-primary { width: 100%; padding: 9px 16px; font-size: 14px; font-weight: 600; color: #ffffff; background-color: #1e3a8a; border: none; border-radius: 6px; cursor: pointer; box-sizing: border-box; }
+        .gh-btn-primary:hover { background-color: #1d4ed8; }
+        .gh-note-box { margin-top: 18px; padding-top: 14px; border-top: 1px solid #d0d7de; text-align: left; }
+        .gh-note-title { font-size: 12px; font-weight: 600; color: #57606a; margin-bottom: 8px; }
+        .gh-note-item { width: 100%; background-color: #f6f8fa; border: 1px solid #d0d7de; border-radius: 6px; padding: 8px 10px; margin-bottom: 8px; font-size: 12px; color: #1f2328; display: flex; align-items: center; gap: 8px; cursor: pointer; box-sizing: border-box; }
+        .gh-note-item:hover { background-color: #eff6ff; border-color: #1e3a8a; }
+        .gh-note-text { flex: 1; line-height: 1.4; }
+        .gh-badge { font-size: 10px; font-weight: 700; padding: 2px 6px; border-radius: 4px; letter-spacing: 0.3px; white-space: nowrap; }
+        .gh-badge-admin { background: #fee2e2; color: #dc2626; border: 1px solid #fecaca; }
+        .gh-badge-user { background: #dbeafe; color: #1e40af; border: 1px solid #bfdbfe; }
+        .gh-subcard { width: 100%; max-width: 340px; margin-top: 16px; padding: 16px; text-align: center; font-size: 13px; color: #1f2328; border: 1px solid #d0d7de; border-radius: 6px; background-color: #ffffff; box-sizing: border-box; box-shadow: 0 1px 3px rgba(31, 35, 40, 0.08); }
+        .gh-subcard a { color: #0969da; text-decoration: none; font-weight: 600; }
+        .gh-subcard a:hover { text-decoration: underline; }
+
+        #mainApp { background-color: #f1f5f9; min-height: 100vh; }
+        .app-header { background: #1e3a8a; color: #ffffff; padding: 14px 24px; display: flex; justify-content: space-between; align-items: center; }
+        .app-header h1 { font-size: 20px; margin-bottom: 2px; }
+        .app-header p { font-size: 12px; color: #cbd5e1; }
+        .user-box { display: flex; align-items: center; gap: 12px; font-size: 13px; }
+        .role-badge { padding: 2px 8px; border-radius: 12px; font-size: 11px; font-weight: bold; text-transform: uppercase; }
+        .role-admin { background: #ef4444; color: #ffffff; }
+        .role-user { background: #3b82f6; color: #ffffff; }
+        .btn-logout { background: transparent; border: 1px solid #cbd5e1; color: #ffffff; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; }
+        .btn-logout:hover { background: rgba(255, 255, 255, 0.15); }
+        .nav-tabs { background: #ffffff; display: flex; justify-content: center; border-bottom: 2px solid #cbd5e1; }
+        .tab-btn { padding: 12px 24px; border: none; background: transparent; font-size: 14px; font-weight: bold; color: #64748b; cursor: pointer; border-bottom: 3px solid transparent; }
+        .tab-btn:hover { color: #1e3a8a; }
+        .tab-btn.active { color: #1e3a8a; border-bottom-color: #1e3a8a; }
+        .container { max-width: 980px; margin: 20px auto; padding: 0 15px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+        .box { background: #ffffff; padding: 20px; border-radius: 6px; border: 1px solid #cbd5e1; }
+        .box h2 { font-size: 17px; margin-bottom: 15px; color: #1e3a8a; border-bottom: 1px solid #e2e8f0; padding-bottom: 8px; }
+        .form-row { display: flex; align-items: center; gap: 12px; margin-bottom: 15px; flex-wrap: wrap; }
+        .form-row label { font-weight: bold; font-size: 14px; }
+        .form-row input { padding: 8px 10px; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 14px; outline: none; }
+        .inline-form input { flex: 1; }
+        .btn-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .btn { padding: 8px 16px; border: none; border-radius: 4px; font-size: 14px; font-weight: bold; cursor: pointer; }
+        .btn-blue { background: #2563eb; color: #fff; }
+        .btn-blue:hover { background: #1d4ed8; }
+        .btn-green { background: #16a34a; color: #fff; }
+        .btn-green:hover { background: #15803d; }
+        .btn-gray { background: #64748b; color: #fff; }
+        .btn-gray:hover { background: #475569; }
+        .btn-red { background: #dc2626; color: #fff; padding: 4px 8px; font-size: 12px; }
+        .btn-red:hover { background: #b91c1c; }
+        .data-table { width: 100%; border-collapse: collapse; margin-bottom: 15px; font-size: 14px; }
+        .data-table th, .data-table td { border: 1px solid #cbd5e1; padding: 8px 10px; text-align: left; }
+        .data-table th { background: #f8fafc; font-size: 13px; }
+        .data-table input { width: 100%; padding: 6px; border: 1px solid #cbd5e1; border-radius: 3px; font-size: 13px; }
+        .total-box { text-align: right; font-size: 15px; padding-top: 10px; border-top: 1px solid #e2e8f0; }
+        .total-box strong { color: #16a34a; font-size: 20px; margin-left: 8px; }
+    </style>
 </head>
 <body>
 
-    <header class="app-header">
-        <h1>CỬA HÀNG VẬT TƯ BÁN LẺ</h1>
-        <p>Hệ thống quản lý bán hàng và lập hóa đơn</p>
-    </header>
+    <div id="loginScreen" class="gh-auth-wrapper">
+        <div class="gh-header">
+            <svg class="gh-logo-icon" viewBox="0 0 24 24" width="48" height="48" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+            </svg>
+            <div class="gh-app-title">Trang web quản lý bán hàng cho cửa hàng vật tư</div>
+            <h1 id="ghHeading" class="gh-heading">Đăng nhập hệ thống</h1>
+        </div>
 
-    <nav class="nav-tabs">
-        <button class="tab-btn active" onclick="chuyenTab('tab-banhang', this)">Bán Hàng</button>
-        <button class="tab-btn" onclick="chuyenTab('tab-khohang', this)">Kho Hàng</button>
-        <button class="tab-btn" onclick="chuyenTab('tab-lichsu', this)">Lịch Sử Đơn</button>
-    </nav>
+        <div id="authAlert" class="gh-alert" style="display: none;"></div>
 
-    <div class="container">
+        <div id="cardLogin" class="gh-card">
+            <div class="gh-form-group">
+                <label class="gh-label" for="loginUser">Tên đăng nhập</label>
+                <input type="text" id="loginUser" class="gh-input" autofocus autocomplete="username" onkeydown="if(event.key==='Enter') dangNhap()">
+            </div>
 
-        <div id="tab-banhang" class="tab-content active">
-            <div class="box">
-                <h2>Lập Hóa Đơn Bán Hàng</h2>
-                <div class="form-row">
-                    <label>Tên khách hàng:</label>
-                    <input type="text" id="tenKhach" placeholder="Nhập tên khách hàng...">
-                    <label>Ngày lập:</label>
-                    <input type="date" id="ngayLap">
+            <div class="gh-form-group">
+                <label class="gh-label" for="loginPass">Mật khẩu</label>
+                <input type="password" id="loginPass" class="gh-input" autocomplete="current-password" onkeydown="if(event.key==='Enter') dangNhap()">
+            </div>
+
+            <button type="button" class="gh-btn-primary" onclick="dangNhap()">Đăng nhập</button>
+
+            <div class="gh-note-box">
+                <div class="gh-note-title">Ghi chú tài khoản dùng thử:</div>
+                <div class="gh-note-item" onclick="dangNhapNhanh('admin', '123')" title="Bấm để đăng nhập ngay">
+                    <span class="gh-badge gh-badge-admin">ADMIN</span>
+                    <span class="gh-note-text">Tài khoản admin: <strong>admin</strong> | Mật khẩu mặc định: <strong>123</strong></span>
                 </div>
-
-                <div class="btn-group">
-                    <button class="btn btn-blue" onclick="themDong()">Thêm dòng hàng</button>
-                    <button class="btn btn-green" onclick="luuHoaDon()">Lưu hóa đơn</button>
-                    <button class="btn btn-gray" onclick="lamMoi()">Làm mới</button>
-                </div>
-
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 45px;">STT</th>
-                            <th>Tên hàng hóa</th>
-                            <th style="width: 120px;">Đơn vị tính</th>
-                            <th style="width: 100px;">Số lượng</th>
-                            <th style="width: 140px;">Đơn giá (đ)</th>
-                            <th style="width: 150px;">Thành tiền (đ)</th>
-                            <th style="width: 70px;">Xóa</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bangHoaDon"></tbody>
-                </table>
-
-                <div class="total-box">
-                    <span>Tổng tiền thanh toán:</span>
-                    <strong id="tongTien">0 đ</strong>
+                <div class="gh-note-item" onclick="dangNhapNhanh('nhanvien', '123')" title="Bấm để đăng nhập ngay">
+                    <span class="gh-badge gh-badge-user">NHÂN VIÊN</span>
+                    <span class="gh-note-text">Tài khoản nhân viên: <strong>nhanvien</strong> | Mật khẩu mặc định: <strong>123</strong></span>
                 </div>
             </div>
         </div>
 
-        <div id="tab-khohang" class="tab-content">
-            <div class="box">
-                <h2>Danh Mục Kho Hàng</h2>
-                <div class="form-row inline-form">
-                    <input type="text" id="spTen" placeholder="Tên mặt hàng...">
-                    <input type="text" id="spDvt" placeholder="Đơn vị tính...">
-                    <input type="number" id="spGia" placeholder="Giá bán...">
-                    <button class="btn btn-blue" onclick="themSanPham()">Thêm vào kho</button>
-                </div>
-
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 45px;">STT</th>
-                            <th>Tên hàng hóa</th>
-                            <th>Đơn vị tính</th>
-                            <th>Giá bán (đ)</th>
-                            <th style="width: 70px;">Xóa</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bangKhoHang"></tbody>
-                </table>
-            </div>
+        <div id="subcardLogin" class="gh-subcard">
+            Chưa có tài khoản? <a href="javascript:void(0)" onclick="chuyenAuthTab('register')">Đăng ký tài khoản ngay</a>
         </div>
 
-        <div id="tab-lichsu" class="tab-content">
-            <div class="box">
-                <h2>Lịch Sử Đơn Hàng Đã Lưu</h2>
-                <table class="data-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 45px;">STT</th>
-                            <th>Mã đơn</th>
-                            <th>Khách hàng</th>
-                            <th>Ngày lập</th>
-                            <th>Tổng tiền (đ)</th>
-                            <th style="width: 70px;">Xóa</th>
-                        </tr>
-                    </thead>
-                    <tbody id="bangLichSu"></tbody>
-                </table>
+        <div id="cardRegister" class="gh-card" style="display: none;">
+            <div class="gh-form-group">
+                <label class="gh-label" for="regUser">Tên đăng nhập mới</label>
+                <input type="text" id="regUser" class="gh-input" placeholder="Ví dụ: nhanvien2" autocomplete="username">
             </div>
+
+            <div class="gh-form-group">
+                <label class="gh-label" for="regHoTen">Họ và tên</label>
+                <input type="text" id="regHoTen" class="gh-input" placeholder="Ví dụ: Nguyễn Văn A">
+            </div>
+
+            <div class="gh-form-group">
+                <label class="gh-label" for="regRole">Vai trò tài khoản</label>
+                <select id="regRole" class="gh-input" style="cursor: pointer;">
+                    <option value="user">Nhân viên bán hàng (User)</option>
+                    <option value="admin">Quản trị viên (Admin)</option>
+                </select>
+            </div>
+
+            <div class="gh-form-group">
+                <label class="gh-label" for="regPass">Mật khẩu</label>
+                <input type="password" id="regPass" class="gh-input" placeholder="Tối thiểu 3 ký tự" autocomplete="new-password">
+            </div>
+
+            <div class="gh-form-group">
+                <label class="gh-label" for="regPassConfirm">Xác nhận mật khẩu</label>
+                <input type="password" id="regPassConfirm" class="gh-input" placeholder="Nhập lại mật khẩu" autocomplete="new-password">
+            </div>
+
+            <button type="button" class="gh-btn-primary" onclick="dangKy()">Đăng ký tài khoản</button>
         </div>
 
+        <div id="subcardRegister" class="gh-subcard" style="display: none;">
+            Đã có tài khoản? <a href="javascript:void(0)" onclick="chuyenAuthTab('login')">Đăng nhập</a>
+        </div>
     </div>
 
-    <script src="js/app.js"></script>
+    <div id="mainApp" style="display: none;">
+        <header class="app-header">
+            <div>
+                <h1>CỬA HÀNG VẬT TƯ BÁN LẺ</h1>
+                <p>Hệ thống quản lý bán hàng và lập hóa đơn</p>
+            </div>
+            <div id="userBox" class="user-box">
+                <span>Xin chào, <strong id="userHoTen"></strong></span>
+                <span id="userRoleBadge" class="role-badge"></span>
+                <button class="btn-logout" onclick="dangXuat()">Đăng xuất</button>
+            </div>
+        </header>
+
+        <nav class="nav-tabs">
+            <button class="tab-btn active" onclick="chuyenTab('tab-banhang', this)">Bán Hàng</button>
+            <button class="tab-btn" onclick="chuyenTab('tab-khohang', this)">Kho Hàng</button>
+            <button class="tab-btn" onclick="chuyenTab('tab-lichsu', this)">Lịch Sử Đơn</button>
+        </nav>
+
+        <div class="container">
+
+            <div id="tab-banhang" class="tab-content active">
+                <div class="box">
+                    <h2>Lập Hóa Đơn Bán Hàng</h2>
+                    <div class="form-row">
+                        <label>Tên khách hàng:</label>
+                        <input type="text" id="tenKhach" placeholder="Nhập tên khách hàng...">
+                        <label>Ngày lập:</label>
+                        <input type="date" id="ngayLap">
+                    </div>
+
+                    <div class="btn-group">
+                        <button class="btn btn-blue" onclick="themDong()">Thêm dòng hàng</button>
+                        <button class="btn btn-green" onclick="luuHoaDon()">Lưu hóa đơn</button>
+                        <button class="btn btn-gray" onclick="lamMoi()">Làm mới</button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 45px;">STT</th>
+                                <th>Tên hàng hóa</th>
+                                <th style="width: 120px;">Đơn vị tính</th>
+                                <th style="width: 100px;">Số lượng</th>
+                                <th style="width: 140px;">Đơn giá (đ)</th>
+                                <th style="width: 150px;">Thành tiền (đ)</th>
+                                <th style="width: 70px;">Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bangHoaDon"></tbody>
+                    </table>
+
+                    <div class="total-box">
+                        <span>Tổng tiền thanh toán:</span>
+                        <strong id="tongTien">0 đ</strong>
+                    </div>
+                </div>
+            </div>
+
+            <div id="tab-khohang" class="tab-content">
+                <div class="box">
+                    <h2>Danh Mục Kho Hàng</h2>
+                    <div class="form-row inline-form" id="khoNhapBox">
+                        <input type="text" id="spTen" placeholder="Tên mặt hàng...">
+                        <input type="text" id="spDvt" placeholder="Đơn vị tính...">
+                        <input type="number" id="spGia" placeholder="Giá bán...">
+                        <button class="btn btn-blue" onclick="themSanPham()">Thêm vào kho</button>
+                    </div>
+
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 45px;">STT</th>
+                                <th>Tên hàng hóa</th>
+                                <th>Đơn vị tính</th>
+                                <th>Giá bán (đ)</th>
+                                <th id="cotXoaKho" style="width: 70px;">Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bangKhoHang"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="tab-lichsu" class="tab-content">
+                <div class="box">
+                    <h2>Lịch Sử Đơn Hàng Đã Lưu</h2>
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 45px;">STT</th>
+                                <th>Mã đơn</th>
+                                <th>Khách hàng</th>
+                                <th>Ngày lập</th>
+                                <th>Người tạo</th>
+                                <th>Tổng tiền (đ)</th>
+                                <th id="cotXoaLichSu" style="width: 70px;">Xóa</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bangLichSu"></tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <script src="js/app.js?v=8"></script>
 </body>
 </html>

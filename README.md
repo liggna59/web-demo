@@ -1,25 +1,25 @@
 # Web Quản Lý Bán Hàng Vật Tư Bán Lẻ
 
-Hệ thống quản lý bán hàng và hóa đơn kiến trúc tách biệt Frontend và Backend.
+Hệ thống quản lý bán hàng và hóa đơn kiến trúc tách biệt Frontend và Backend, hỗ trợ xác thực phân quyền và triển khai Docker.
 
-## Cấu trúc
+## Cấu trúc hệ thống
 - `backend/`: Golang REST API (Port 8080)
-- `frontend/`: HTML, CSS, JavaScript, TypeScript (Port 3000)
+- `frontend/`: Nginx Web Server, HTML, CSS, JavaScript, TypeScript (Port 3000)
 
-## Hướng dẫn chạy
+## Danh sách tài khoản mặc định
+| Tên đăng nhập | Mật khẩu | Họ tên | Vai trò | Quyền hạn |
+|---|---|---|---|---|
+| `admin` | `123` | Quản trị viên | **admin** | Toàn quyền quản lý kho, xem toàn bộ hóa đơn, xóa hóa đơn |
+| `nhanvien` | `123` | Nhân viên bán hàng | **user** | Lập hóa đơn, xem kho (không được xóa hàng), xem đơn của chính mình |
 
-### 1. Khởi động Backend
-Mở terminal 1:
+## Hướng dẫn chạy bằng Docker
 ```bash
-cd backend
-go run main.go
-```
-Backend chạy tại: http://localhost:8080
-
-### 2. Khởi động Frontend
-Mở terminal 2:
-```bash
-cd frontend
-go run main.go
+docker compose up --build
 ```
 Truy cập giao diện: http://localhost:3000
+
+## Hướng dẫn Public Internet bằng Cloudflare Tunnel
+```bash
+cloudflared tunnel --url http://localhost:3000
+```
+Truy cập qua đường link công khai: https://xxx.trycloudflare.com
